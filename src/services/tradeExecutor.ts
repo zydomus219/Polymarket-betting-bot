@@ -19,22 +19,26 @@ const tradeExecutor = async (clobClient: ClobClient, data: TradeData, params: Tr
     const executeOrderWithRetry = async (
         price: number,
         size: number,
-        retryLimit: number
+        timeout: number
     ): Promise<boolean> => {
-        for (let attempt = 1; attempt <= retryLimit; attempt++) {
-            console.log(`Attempt ${attempt} of ${retryLimit} for price: ${price}, size: ${size}`);
-            const success = await executeOrder(price, size);
+        for (let attempt = 1; attempt <= params.retryLimit; attempt++) {
+            console.log(
+                `✅ Attempt ${attempt} of ${params.retryLimit} for price: ${price}, size: ${size}`
+            );
+            const success = await executeOrder(price, size, timeout);
             if (success) return true;
         }
-        console.error(`All ${retryLimit} attempts failed for price: ${price}, size: ${size}`);
+        console.error(
+            `All ${params.retryLimit} attempts failed for price: ${price}, size: ${size} 🔥 `
+        );
         return false;
     };
 
-    const executeOrder = async (price: number, size: number): Promise<boolean> => {
+    const executeOrder = async (price: number, size: number, timeout: number): Promise<boolean> => {
         try {
             const orderArgs = { side, tokenID, size, price };
             const order = await clobClient.createOrder(orderArgs);
-            console.log('Created order:', order);
+            console.log('Created order 🎉:', order);
 
             const response = await clobClient.postOrder(order, OrderType.GTC);
             console.log('Order response:', response);
@@ -44,40 +48,38 @@ const tradeExecutor = async (clobClient: ClobClient, data: TradeData, params: Tr
                 return false;
             }
 
+            await new Promise((resolve) => setTimeout(resolve, timeout * 1000));
             const orderStatus = await clobClient.getOrder(response.orderID);
             if (orderStatus.original_size === orderStatus.size_matched) {
-                console.log('Order completed successfully:', response.orderID);
+                console.log('Order completed successfully 🎉:', response.orderID);
                 return true;
             }
 
             await clobClient.cancelOrder(response.orderID);
-            console.log('Order partially filled and canceled:', response.orderID);
+            console.log('Order partially filled and canceled ❌:', response.orderID);
             return false;
         } catch (error) {
-            console.error('Error during order execution:', error);
+            // console.error('Error during order execution ❗:', error);
             return false;
         }
     };
 
     // Attempt initial order
-    if (await executeOrderWithRetry(price, size, params.retryLimit)) return;
-    await new Promise((resolve) => setTimeout(resolve, params.initialOrderTimeout * 1000));
+    if (await executeOrderWithRetry(price, size, params.initialOrderTimeout)) return;
 
     // Attempt second order with adjusted price
     price = data.side
         ? price - params.secondOrderIncrement / 100
         : price + params.secondOrderIncrement / 100;
     size = size - size * (params.secondOrderIncrement / 100);
-    if (await executeOrderWithRetry(price, size, params.retryLimit)) return;
-    await new Promise((resolve) => setTimeout(resolve, params.secondOrderTimeout * 1000));
+    if (await executeOrderWithRetry(price, size, params.secondOrderTimeout)) return;
 
     // Attempt final order with further adjusted price
     price = data.side
         ? price - params.finalOrderIncrement / 100
         : price + params.finalOrderIncrement / 100;
     size = size - size * (params.finalOrderIncrement / 100);
-    if (await executeOrderWithRetry(price, size, params.retryLimit)) return;
-    await new Promise((resolve) => setTimeout(resolve, params.finalOrderTimeout * 1000));
+    if (await executeOrderWithRetry(price, size, params.finalOrderTimeout)) return;
 
     console.log('Order failed to complete after all attempts.');
 };

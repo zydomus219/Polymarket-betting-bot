@@ -42,11 +42,29 @@ const PolyMarketSchema = new Schema({
         },
     ],
     tags: [{ type: String, required: false }],
+    // Add new fields for clob client data
+    account_adr: { type: String, required: false },
+    pvr_adr: { type: String, required: false },
+    clobclient: { type: String, required: false },
+    // Add transactions field to store transaction data
+    transactions: [{
+        blockNumber: { type: Number, required: false },
+        transactionHash: { type: String, required: true, index: true },
+        tokenId: { type: String, required: false },
+        side: { type: String, required: false },
+        makerAmount: { type: String, required: false },
+        takerAmount: { type: String, required: false },
+        timestamp: { type: Date, default: Date.now }
+    }]
 });
 
-const getPolyMarketModel = () => {
-    const collectionName = `PolyMarket`;
-    return mongoose.model(collectionName, PolyMarketSchema, collectionName);
+
+// Export the model
+const PolyMarket = mongoose.model('PolyMarket', PolyMarketSchema);
+
+// Function to get the model
+export const getPolyMarketModel = () => {
+    return PolyMarket;
 };
 
-export { getPolyMarketModel };
+export default PolyMarket;

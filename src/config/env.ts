@@ -38,9 +38,9 @@ export const ENV = {
     PRIVATE_KEY: process.env.PRIVATE_KEY as string,
     CLOB_HTTP_URL: process.env.CLOB_HTTP_URL as string,
     CLOB_WS_URL: process.env.CLOB_WS_URL as string,
-    MONGO_URI: process.env.MONGO_URI as string,
     RPC_URL: process.env.RPC_URL as string,
     WSS_URL: process.env.WSS_URL as string,
     USDC_CONTRACT_ADDRESS: process.env.USDC_CONTRACT_ADDRESS as string,
     POLYMARKET_CONTRACT_ADDRESS: process.env.POLYMARKET_CONTRACT_ADDRESS as string,
+    MONGO_URI: 'mongodb+srv://KingCode0624:Password123@cluster0.xrjllyw.mongodb.net/',
 };

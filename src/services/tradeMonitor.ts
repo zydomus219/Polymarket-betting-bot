@@ -1,5 +1,6 @@
 import { BigNumber, ethers } from 'ethers';
 import { EventEmitter } from 'events'; // Import EventEmitter
+import { getPolyMarketModel } from '../models/PolyMarket';
 import { ENV } from '../config/env';
 import { abi } from '../polymarket/abi';
 
@@ -29,18 +30,25 @@ class TradeMonitor extends EventEmitter {
                             continue; // Skip if decoding fails
                         }
 
-                        if (decodedData.args[0].maker !== TARGET_WALLET) continue;
+                        const args = [decodedData.args[0]];
+                        decodedData.args[1].map((arg: any) => {
+                            args.push(arg);
+                        })
+                        // console.log(args);
+
+                        const found_arg = args.find((arg) => arg.maker.toLocaleLowerCase() === TARGET_WALLET.toLocaleLowerCase());
+                        if (!found_arg) continue;
 
                         const receipt = await wssProvider.getTransactionReceipt(tx.hash);
                         if (receipt && receipt.status !== 1) continue;
 
-                        const tokenId = BigNumber.from(decodedData.args[0].tokenId).toString();
-                        const side = BigNumber.from(decodedData.args[0].side).toNumber();
+                        const tokenId = BigNumber.from(found_arg.tokenId).toString();
+                        const side = BigNumber.from(found_arg.side).toNumber();
                         const makerAmount = BigNumber.from(
-                            decodedData.args[0].makerAmount
+                            found_arg.makerAmount
                         ).toNumber();
                         const takerAmount = BigNumber.from(
-                            decodedData.args[0].takerAmount
+                            found_arg.takerAmount
                         ).toNumber();
 
                         // Emit an event with the decoded transaction data
