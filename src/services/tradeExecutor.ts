@@ -1,19 +1,26 @@
 import { ClobClient, OrderType, Side } from '@polymarket/clob-client';
 import { TradeData, TradeParams } from '../interfaces/tradeInterfaces';
+import getMyBalance from '../utils/getMyBalance';
 
 const tradeExecutor = async (clobClient: ClobClient, data: TradeData, params: TradeParams) => {
-    console.log('New trade executing process: ', data);
+    console.log('\n------------------------------------------\n New trade executing process: ', data);
 
     const side = data.side ? Side.SELL : Side.BUY;
     const tokenID = data.tokenId;
     let price = data.side
         ? data.takerAmount / data.makerAmount
         : data.makerAmount / data.takerAmount;
-    let size = data.side ? data.makerAmount / 1000000 + 0.01 : data.takerAmount / 1000000 + 0.01;
+    let size = data.side ? data.makerAmount / 1000000 * params.copyRatio + 0.01 : data.takerAmount / 1000000 * params.copyRatio + 0.01;
 
-    if (size < 5 || size * price < 1) {
-        console.log('Order size or value too small, skipping execution.');
-        return;
+    if (size < 5) {
+        size = 5;
+        console.log('size too small, reset size as 5');
+    }
+    if (size * price < 1) {
+        // console.log('value too small, skipping execution.');
+        size = 1 / price + 0.01;
+        console.log(`reset size as ${size}=1/${price}`);
+        // return;    
     }
 
     const executeOrderWithRetry = async (
@@ -25,6 +32,7 @@ const tradeExecutor = async (clobClient: ClobClient, data: TradeData, params: Tr
             console.log(
                 `✅ Attempt ${attempt} of ${params.retryLimit} for price: ${price}, size: ${size}`
             );
+
             const success = await executeOrder(price, size, timeout);
             if (success) return true;
         }
@@ -55,11 +63,12 @@ const tradeExecutor = async (clobClient: ClobClient, data: TradeData, params: Tr
                 return true;
             }
 
+            await new Promise((resolve) => setTimeout(resolve, timeout * 1000));
             await clobClient.cancelOrder(response.orderID);
             console.log('Order partially filled and canceled ❌:', response.orderID);
             return false;
         } catch (error) {
-            // console.error('Error during order execution ❗:', error);
+            console.error('Error during order execution ❗:', error);
             return false;
         }
     };

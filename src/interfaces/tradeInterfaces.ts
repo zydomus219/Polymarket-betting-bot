@@ -9,6 +9,7 @@ export interface TradeData {
 
 export interface TradeParams {
     targetWallet: string;
+    copyRatio: number;
     retryLimit: number;
     initialOrderTimeout: number;
     secondOrderIncrement: number;

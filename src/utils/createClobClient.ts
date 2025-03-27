@@ -57,17 +57,7 @@ const createClobClient = async (): Promise<ClobClient> => {
         // Check if a record with this wallet already exists
         const existingRecord = await PolyMarket.findOne({ account_adr: Acc_adr });
 
-        if (existingRecord) {
-            // Update existing record
-            await PolyMarket.updateOne(
-                { account_adr: Acc_adr },
-                {
-                    pvr_adr: Acc_adr,
-                    clobclient: clobClientString
-                }
-            );
-            console.log('ClobClient data updated in MongoDB');
-        } else {
+        if (!existingRecord) {
             // Create new record
             await PolyMarket.create({
                 account_adr: Acc_adr,
@@ -75,6 +65,8 @@ const createClobClient = async (): Promise<ClobClient> => {
                 clobclient: clobClientString
             });
             console.log('ClobClient data saved to MongoDB successfully');
+        } else {
+            console.log('ClobClient data already exists in MongoDB');
         }
         return clobClient;
     } catch (error) {

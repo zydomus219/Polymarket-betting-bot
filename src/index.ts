@@ -22,6 +22,10 @@ const promptUser = async (): Promise<TradeParams> => {
         new Promise((resolve) => rl.question(query, resolve));
 
     const targetWallet = await question('Enter target wallet address: ');
+    const copyRatio = parseInt(
+        await question('Enter your wanted ratio (fraction): '),
+        10
+    );
 
     const retryLimit = parseInt(await question('Enter retry limit: '), 10);
 
@@ -50,6 +54,7 @@ const promptUser = async (): Promise<TradeParams> => {
 
     return {
         targetWallet,
+        copyRatio,
         retryLimit,
         initialOrderTimeout,
         secondOrderIncrement,
