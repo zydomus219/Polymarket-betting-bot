@@ -73,16 +73,7 @@ export const main = async () => {
     const clobClient = await createClobClient();
     createClobClientSpinner.succeed('ClobClient created\n');
     const params = await promptUser();
-    // console.log(params);
-    // const params = {
-    //     targetWallet: '0xd218e474776403a330142299f7796e8ba32eb5c9',
-    //     retryLimit: 1,
-    //     initialOrderTimeout: 10,
-    //     secondOrderIncrement: 1,
-    //     secondOrderTimeout: 10,
-    //     finalOrderIncrement: 1,
-    //     finalOrderTimeout: 10,
-    // };
+    
     const botStartSpinner = ora('Starting the bot...').start();
     const monitor = new TradeMonitor();
     monitor.on('transaction', (data) => {
