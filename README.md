@@ -1,12 +1,62 @@
-# Polymarket Trade Copier
+# 🧭 Polymarket Trade Copier [Project ID: P-366]
+
+A sophisticated trading bot that monitors and replicates trading positions from specified wallets on Polymarket, with configurable execution parameters and risk management.
+
+---
+
+## 📚 Table of Contents
+
+- [About](#about)
+- [Features](#features)
+- [Tech Stack](#tech-stack)
+- [Installation](#installation)
+- [Usage](#usage)
+- [Configuration](#configuration)
+- [Screenshots](#screenshots)
+- [API Documentation](#api-documentation)
+- [Contact](#contact)
+- [Acknowledgements](#acknowledgements)
+
+---
+
+## 🧩 About
+
+The Polymarket Trade Copier is an enterprise-grade trading bot designed to observe and replicate trading activities from target wallets on the Polymarket platform. It leverages blockchain event monitoring to detect trades in real-time and executes similar positions with configurable parameters through the Polymarket Central Limit Order Book (CLOB) API.
+
+
+**Motivation:** Mirror successful trading strategies from proven market participants, automate position taking with customizable execution parameters, and implement sophisticated order execution with fallback mechanisms.
+
+**Key goals:**
+- Real-time blockchain event tracking for target wallets
+- Parameterized position sizing and multi-stage order execution
+- Balance verification, retry logic, and order lifecycle management
+
+---
+
+## ✨ Features
+
+- **Blockchain event tracking** – Monitors Ethereum/Polygon for trading events from target wallets and validates transactions before copying
+- **Parameterized position sizing** – Configurable ratio-based sizing relative to the target wallet (e.g. 0.1–0.3 for risk management)
+- **Three-phase execution** – Primary order → price/size adjustment → final attempt with configurable timeouts and increments
+- **Retry & lifecycle management** – Automatic retries with optimized parameters; cancels partially filled orders when needed
+- **Interactive setup** – CLI prompts for target wallet, copy ratio, timeouts, and price increments
+- **Balance & allowance checks** – USDC balance verification and token approval script for CLOB
+- **Database integration** – Stores trade data (e.g. MongoDB) for analysis and record-keeping
+
+---
+
+## 🧠 Tech Stack
+
+- **Languages:** TypeScript, JavaScript
+- **Runtime:** Node.js (v14+)
+- **Frameworks / libs:** ethers.js, Polymarket CLOB client, Mongoose
+- **Blockchain:** Ethereum / Polygon (RPC + WebSocket)
+- **Database:** MongoDB
+- **Tools:** ESLint, Prettier, ts-node, Jest (testing)
 
 ## Professional Trading Bot for Automated Position Mirroring
 
 A sophisticated trading application that monitors and replicates trading positions from specified wallets on Polymarket, with advanced execution parameters and risk management features.
-
-## Project Overview
-
-The Polymarket Trade Copier is an enterprise-grade trading bot designed to observe and replicate trading activities from target wallets on the Polymarket platform. It leverages blockchain event monitoring to detect trades in real-time and executes similar positions with configurable parameters through the Polymarket Central Limit Order Book (CLOB) API.
 
 This solution is ideal for traders looking to:
 - Mirror successful trading strategies from proven market participants
