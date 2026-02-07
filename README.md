@@ -4,21 +4,6 @@ A sophisticated trading bot that monitors and replicates trading positions from 
 
 ---
 
-## 📚 Table of Contents
-
-- [About](#about)
-- [Features](#features)
-- [Tech Stack](#tech-stack)
-- [Installation](#installation)
-- [Usage](#usage)
-- [Configuration](#configuration)
-- [Screenshots](#screenshots)
-- [API Documentation](#api-documentation)
-- [Contact](#contact)
-- [Acknowledgements](#acknowledgements)
-
----
-
 ## 🧩 About
 
 The Polymarket Trade Copier is an enterprise-grade trading bot designed to observe and replicate trading activities from target wallets on the Polymarket platform. It leverages blockchain event monitoring to detect trades in real-time and executes similar positions with configurable parameters through the Polymarket Central Limit Order Book (CLOB) API.
