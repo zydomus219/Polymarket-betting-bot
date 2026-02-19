@@ -1,4 +1,4 @@
-# 🧭 Polymarket Trade Copier [Project ID: P-366]
+# 🧭 Polymarket Trade Copier
 
 A sophisticated trading bot that monitors and replicates trading positions from specified wallets on Polymarket, with configurable execution parameters and risk management.
 
